@@ -304,11 +304,61 @@ label{font-size:12.5px;font-weight:700;color:var(--txt-dim);text-transform:upper
 .fab:hover{transform:scale(1.07);box-shadow:0 12px 32px rgba(255,85,0,.5)}
 
 /* ============ RESPONSIVE ============ */
+/* ============ WELCOME HERO ============ */
+.welcome-hero{
+  background:linear-gradient(135deg,#18120a,#1e1508);
+  border:1px solid rgba(255,85,0,.2);border-radius:var(--radius);
+  padding:32px 28px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  position:relative;overflow:hidden;
+}
+.welcome-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 320px 220px at 70% 50%,rgba(255,85,0,.09),transparent);
+  pointer-events:none;
+}
+.welcome-content{position:relative;z-index:1;max-width:420px}
+.welcome-badge{
+  display:inline-block;background:var(--accent);color:#fff;
+  font-size:10px;font-weight:800;letter-spacing:2px;
+  padding:4px 10px;border-radius:20px;margin-bottom:14px;
+}
+.welcome-title{font-family:'Archivo Black';font-size:26px;letter-spacing:-.4px;line-height:1.2;margin-bottom:10px}
+.welcome-sub{font-size:13.5px;color:var(--txt-dim);line-height:1.6;margin-bottom:20px}
+.welcome-steps{display:flex;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.ws-step{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--txt-dim)}
+.ws-num{
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(255,85,0,.15);color:var(--accent);
+  display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0;
+}
+.welcome-visual{flex-shrink:0;width:220px;opacity:.85}
+
+/* ============ ILLUSTRATED EMPTY STATES ============ */
+.empty-illus{text-align:center;padding:36px 20px}
+.empty-svg{width:160px;height:80px;display:block;margin:0 auto 16px;opacity:.85}
+.empty-title{font-size:15px;font-weight:800;color:var(--txt);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--txt-dim);line-height:1.55}
+
+/* ============ MOTIV DECO ============ */
+.motiv{position:relative}
+.motiv-deco{
+  position:absolute;right:0;top:-8px;
+  width:110px;height:90px;opacity:.55;pointer-events:none;flex-shrink:0;
+}
+
 @media(max-width:860px){
   .dash-grid{grid-template-columns:1fr 1fr}
   .dash-row{grid-template-columns:1fr}
   .tips-grid{grid-template-columns:1fr}
   .ex-builder .grid-4{grid-template-columns:1fr 1fr}
+}
+@media(max-width:860px){
+  .welcome-visual{display:none}
+}
+@media(max-width:560px){
+  .welcome-title{font-size:20px}
+  .welcome-hero{padding:22px 16px}
 }
 @media(max-width:560px){
   .app{padding:0 13px 110px}
@@ -383,6 +433,49 @@ label{font-size:12.5px;font-weight:700;color:var(--txt-dim);text-transform:upper
 
   <!-- ============ DASHBOARD ============ -->
   <section class="page active" id="page-dash">
+
+    <!-- Carte de bienvenue (premier lancement) -->
+    <div class="welcome-hero" id="welcomeHero" style="display:none">
+      <div class="welcome-content">
+        <div class="welcome-badge">BIENVENUE</div>
+        <h2 class="welcome-title">Commence à forger<br>ton corps dès aujourd'hui</h2>
+        <p class="welcome-sub">Enregistre ta première séance, suis ta progression et vise plus haut à chaque entraînement.</p>
+        <div class="welcome-steps">
+          <div class="ws-step"><span class="ws-num">1</span><span>Ajoute une séance</span></div>
+          <div class="ws-step"><span class="ws-num">2</span><span>Entre tes mesures</span></div>
+          <div class="ws-step"><span class="ws-num">3</span><span>Fixe ton objectif</span></div>
+        </div>
+        <button class="btn btn-primary" onclick="openSessionModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
+          Commencer maintenant
+        </button>
+      </div>
+      <div class="welcome-visual">
+        <svg viewBox="0 0 220 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="155" cy="72" r="55" fill="#ff5500" opacity=".04"/>
+          <circle cx="155" cy="72" r="36" fill="#ff5500" opacity=".06"/>
+          <rect x="90" y="65" width="76" height="13" rx="6" fill="url(#whBG)"/>
+          <rect x="60" y="49" width="30" height="42" rx="9" fill="url(#whBG)" opacity=".8"/>
+          <rect x="44" y="56" width="16" height="28" rx="5" fill="url(#whBG)" opacity=".5"/>
+          <rect x="166" y="49" width="30" height="42" rx="9" fill="url(#whBG)" opacity=".8"/>
+          <rect x="196" y="56" width="16" height="28" rx="5" fill="url(#whBG)" opacity=".5"/>
+          <ellipse cx="128" cy="108" rx="48" ry="6" fill="#ff5500" opacity=".07"/>
+          <circle cx="126" cy="38" r="4" fill="#fbbf24" opacity=".9"/>
+          <circle cx="148" cy="30" r="2.5" fill="#fbbf24" opacity=".7"/>
+          <circle cx="140" cy="44" r="2" fill="#fbbf24" opacity=".5"/>
+          <circle cx="115" cy="33" r="1.5" fill="#ff8c00" opacity=".55"/>
+          <path d="M126 38 L123 23" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+          <path d="M148 30 L151 15" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" opacity=".4"/>
+          <defs>
+            <linearGradient id="whBG" x1="44" y1="49" x2="212" y2="91" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ff8c00"/>
+              <stop offset="100%" stop-color="#ff3300"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
     <div class="motiv" id="motivBox">
       <div class="big">💪</div>
       <div class="txt"><b>Prêt à forger ton corps ?</b><span>Chaque séance compte. On y va.</span></div>
@@ -806,7 +899,12 @@ function renderSessions(){
   const c=document.getElementById('sessionsList');
   const sorted=[...DB.sessions].sort((a,b)=>b.date.localeCompare(a.date));
   if(!sorted.length){
-    c.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24"><path d="M6.5 6.5h11M6.5 17.5h11M4 9v6M20 9v6"/></svg><p>Aucune séance enregistrée.<br>Clique sur "Nouvelle séance" pour commencer 💪</p></div>`;
+    c.innerHTML=`<div class="empty-illus">
+      <svg class="empty-svg" viewBox="0 0 160 80" fill="none"><rect x="45" y="36" width="70" height="8" rx="4" fill="url(#sesDB)"/><rect x="18" y="22" width="27" height="36" rx="7" fill="url(#sesDB)"/><rect x="6" y="28" width="12" height="24" rx="4" fill="url(#sesDB)" opacity=".5"/><rect x="115" y="22" width="27" height="36" rx="7" fill="url(#sesDB)"/><rect x="142" y="28" width="12" height="24" rx="4" fill="url(#sesDB)" opacity=".5"/><circle cx="80" cy="19" r="2.5" fill="#fbbf24" opacity=".7"/><circle cx="93" cy="13" r="1.5" fill="#fbbf24" opacity=".5"/><circle cx="67" cy="16" r="1.5" fill="#fbbf24" opacity=".4"/><defs><linearGradient id="sesDB" x1="6" y1="22" x2="154" y2="58" gradientUnits="userSpaceOnUse"><stop stop-color="#ff7c00"/><stop offset="1" stop-color="#cc3300"/></linearGradient></defs></svg>
+      <p class="empty-title">Aucune séance enregistrée</p>
+      <p class="empty-sub">Commence ton journal d'entraînement dès maintenant</p>
+      <button class="btn btn-primary btn-sm" onclick="openSessionModal()" style="margin-top:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:15px;height:15px;stroke-width:2.5"><path d="M12 5v14M5 12h14"/></svg> Nouvelle séance</button>
+    </div>`;
     return;
   }
   c.innerHTML='';
@@ -855,6 +953,14 @@ function startOfWeek(){
 function renderDash(){
   const lw=latestWeight();
   const sw=DB.startWeight, tw=DB.targetWeight;
+
+  // Carte de bienvenue (premier lancement)
+  const isNew=!DB.sessions.length&&!DB.measures.length&&!DB.goals.length;
+  const wh=document.getElementById('welcomeHero');
+  if(isNew&&wh.style.display==='none'){
+    wh.style.display='flex';
+    gsap.from(wh,{y:20,opacity:0,duration:.6,ease:'power2.out'});
+  } else if(!isNew){ wh.style.display='none'; }
 
   // poids
   document.getElementById('dWeight').innerHTML = lw!=null?`${lw} <small>kg</small>`:'—';
@@ -916,6 +1022,8 @@ const MOTIVS=[
   ['🏆','Chaque kilo soulevé te change','La progression est invisible au jour le jour, énorme sur 3 mois.'],
   ['🎯','Concentre-toi sur le process','Les résultats suivent les habitudes, pas l\'inverse.']
 ];
+const FLAME_SVG=`<svg class="motiv-deco" viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M42 72C42 72 24 56 28 38C32 19 47 24 43 9C54 17 58 30 51 43C55 39 57 31 55 24C65 34 63 51 53 59C57 55 58 47 56 40C65 51 61 66 42 72Z" fill="url(#motivFG)" opacity=".75"/><circle cx="70" cy="14" r="3.5" fill="#fbbf24" opacity=".9"/><circle cx="80" cy="27" r="2" fill="#fbbf24" opacity=".65"/><circle cx="63" cy="7" r="1.5" fill="#fbbf24" opacity=".5"/><circle cx="84" cy="12" r="1" fill="#ff8c00" opacity=".6"/><line x1="71" y1="20" x2="71" y2="9" stroke="#ff8c00" stroke-width="1.5" stroke-linecap="round" opacity=".4"/><line x1="80" y1="33" x2="82" y2="22" stroke="#ff8c00" stroke-width="1" stroke-linecap="round" opacity=".3"/><defs><linearGradient id="motivFG" x1="24" y1="9" x2="50" y2="72" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#fbbf24" stop-opacity=".95"/><stop offset="55%" stop-color="#ff5500" stop-opacity=".8"/><stop offset="100%" stop-color="#cc2200" stop-opacity=".4"/></linearGradient></defs></svg>`;
+
 function setMotivation(weekCount,pct){
   const box=document.getElementById('motivBox');
   let m;
@@ -923,7 +1031,7 @@ function setMotivation(weekCount,pct){
   else if(weekCount>=4) m=['🔥','Machine de guerre !',`${weekCount} séances cette semaine. Pense aussi à récupérer.`];
   else if(weekCount===0) m=['💪','Prêt à forger ton corps ?','Une séance aujourd\'hui ? Ton corps attend.'];
   else m=MOTIVS[(new Date().getDate())%MOTIVS.length];
-  box.innerHTML=`<div class="big">${m[0]}</div><div class="txt"><b>${m[1]}</b><span>${m[2]}</span></div>`;
+  box.innerHTML=`<div class="big">${m[0]}</div><div class="txt"><b>${m[1]}</b><span>${m[2]}</span></div>${FLAME_SVG}`;
 }
 
 function renderNextSession(){
@@ -1021,7 +1129,11 @@ function renderHistory(){
   const names=[...new Set(DB.sessions.flatMap(s=>s.exercises.map(e=>e.name)))];
   const c=document.getElementById('exChips');
   if(!names.length){
-    c.innerHTML=`<div class="empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l4-4 3 3 5-6"/></svg><p>Enregistre des séances avec exercices pour suivre ta progression ici.</p></div>`;
+    c.innerHTML=`<div class="empty-illus" style="grid-column:1/-1">
+      <svg class="empty-svg" viewBox="0 0 160 80" fill="none"><line x1="15" y1="65" x2="145" y2="65" stroke="#2c2c3d" stroke-width="1"/><line x1="15" y1="48" x2="145" y2="48" stroke="#2c2c3d" stroke-width="1" stroke-dasharray="4 3" opacity=".5"/><line x1="15" y1="31" x2="145" y2="31" stroke="#2c2c3d" stroke-width="1" stroke-dasharray="4 3" opacity=".5"/><path d="M20 60 L52 52 L84 40 L116 26 L140 15" stroke="url(#perfCG)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 60 L52 52 L84 40 L116 26 L140 15 L140 65 L20 65Z" fill="url(#perfAG)" opacity=".15"/><circle cx="20" cy="60" r="3" fill="#ff5500" opacity=".5"/><circle cx="52" cy="52" r="3" fill="#ff5500" opacity=".65"/><circle cx="84" cy="40" r="3.5" fill="#ff5500" opacity=".8"/><circle cx="116" cy="26" r="4" fill="#ff5500"/><circle cx="140" cy="15" r="5" fill="#ff5500"/><circle cx="140" cy="15" r="9" fill="#ff5500" opacity=".18"/><circle cx="140" cy="15" r="13" fill="#ff5500" opacity=".07"/><defs><linearGradient id="perfCG" x1="20" y1="60" x2="140" y2="15" gradientUnits="userSpaceOnUse"><stop stop-color="#ff5500" stop-opacity=".3"/><stop offset="1" stop-color="#ff5500"/></linearGradient><linearGradient id="perfAG" x1="80" y1="15" x2="80" y2="65" gradientUnits="userSpaceOnUse"><stop stop-color="#ff5500"/><stop offset="1" stop-color="#ff5500" stop-opacity="0"/></linearGradient></defs></svg>
+      <p class="empty-title">Aucune performance à afficher</p>
+      <p class="empty-sub">Enregistre des séances avec des exercices pour voir ta progression ici</p>
+    </div>`;
     document.getElementById('exDetail').innerHTML='';return;
   }
   c.innerHTML='';
