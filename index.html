@@ -85,9 +85,8 @@ nav.tabs::-webkit-scrollbar{display:none}
 }
 
 /* ============ SHARED ============ */
-.page{display:none;animation:fade .35s ease}
+.page{display:none}
 .page.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 .section-title{font-family:'Archivo Black';font-size:24px;letter-spacing:-.6px;margin-bottom:4px}
 .section-sub{color:var(--txt-dim);font-size:14px;margin-bottom:22px}
@@ -279,22 +278,20 @@ label{font-size:12.5px;font-weight:700;color:var(--txt-dim);text-transform:upper
 /* ============ MODAL ============ */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(5px);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:0}
 .modal-bg.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--line);border-top-left-radius:24px;border-top-right-radius:24px;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;padding:24px 22px 30px;animation:slideup .3s cubic-bezier(.16,1,.3,1)}
-@keyframes slideup{from{transform:translateY(100%)}to{transform:none}}
+.modal{background:var(--surface);border:1px solid var(--line);border-top-left-radius:24px;border-top-right-radius:24px;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;padding:24px 22px 30px;will-change:transform}
 .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .modal-head h3{font-family:'Archivo Black';font-size:21px}
 .modal-close{background:var(--surface-2);border:1px solid var(--line);color:var(--txt);width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px}
 .modal-close:hover{border-color:var(--accent);color:var(--txt)}
 
-/* toast */
+/* toast — animé par GSAP */
 .toast{
-  position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(120px);
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
   background:var(--surface);border:1px solid var(--line);color:var(--txt);
   font-weight:700;padding:12px 20px;border-radius:30px;z-index:200;
-  transition:.35s cubic-bezier(.16,1,.3,1);
   box-shadow:0 8px 30px rgba(0,0,0,.4);font-size:13.5px;
+  opacity:0;pointer-events:none;
 }
-.toast.show{transform:translateX(-50%) translateY(0)}
 
 /* fab */
 .fab{
@@ -609,6 +606,7 @@ label{font-size:12.5px;font-weight:700;color:var(--txt-dim);text-transform:upper
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
 /* ============================================================
    FORGE — état + persistance localStorage
@@ -666,7 +664,9 @@ document.getElementById('nav').addEventListener('click',e=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
-  document.getElementById('page-'+t.dataset.page).classList.add('active');
+  const page=document.getElementById('page-'+t.dataset.page);
+  page.classList.add('active');
+  gsap.from(page.children,{y:16,opacity:0,duration:.42,stagger:.07,ease:'power2.out',clearProps:'all'});
   renderAll();
 });
 
@@ -770,8 +770,13 @@ function openSessionModal(id){
   }
   buildTypePicker();buildFeelPicker();renderExList();refreshExSuggest();
   document.getElementById('sessionModal').classList.add('open');
+  gsap.fromTo('.modal',{y:'100%'},{y:0,duration:.45,ease:'back.out(1.15)',clearProps:'transform'});
 }
-function closeSessionModal(){document.getElementById('sessionModal').classList.remove('open');}
+function closeSessionModal(){
+  gsap.to('.modal',{y:'100%',duration:.28,ease:'power2.in',
+    onComplete:()=>document.getElementById('sessionModal').classList.remove('open')
+  });
+}
 
 function saveSession(){
   const date=document.getElementById('sDate').value;
@@ -805,12 +810,14 @@ function renderSessions(){
     return;
   }
   c.innerHTML='';
+  const frags=[];
   sorted.forEach(s=>{
     const t=TYPES[s.type];
     const exCount=s.exercises.length;
     const feelColor=s.feel>=7?'var(--accent)':s.feel>=4?'var(--warn)':'var(--red)';
     const div=document.createElement('div');
     div.className='session-item';
+    frags.push(div);
     div.innerHTML=`
       <div class="si-head" onclick="this.parentNode.querySelector('.si-body').classList.toggle('open')">
         <div class="si-left">
@@ -836,6 +843,7 @@ function renderSessions(){
       </div>`;
     c.appendChild(div);
   });
+  gsap.from(frags,{y:14,opacity:0,duration:.35,stagger:.06,ease:'power2.out',clearProps:'all'});
 }
 
 /* ============================================================
@@ -884,7 +892,7 @@ function renderDash(){
     pct=Math.max(0,Math.min(100,Math.round(((sw-lw)/(sw-tw))*100)));
   }
   document.getElementById('ringPct').textContent=pct+'%';
-  document.getElementById('ringFg').style.strokeDashoffset = 314 - (314 * pct / 100);
+  gsap.to('#ringFg',{strokeDashoffset:314-(314*pct/100),duration:1.4,ease:'power2.out'});
   const narr=document.getElementById('progNarr');
   if(sw!=null&&tw!=null&&lw!=null){
     const done=+(sw-lw).toFixed(1), total=+(sw-tw).toFixed(1);
@@ -1203,8 +1211,14 @@ function renderAll(){
 /* toast */
 let toastT;
 function toast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  gsap.killTweensOf(t);
+  gsap.fromTo(t,{y:60,opacity:0},{y:0,opacity:1,duration:.5,ease:'back.out(1.7)'});
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>{
+    gsap.to(t,{y:60,opacity:0,duration:.3,ease:'power2.in'});
+  },2400);
 }
 
 /* close modal on bg click */
@@ -1217,6 +1231,15 @@ let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>
 load();
 document.getElementById('mDate').value=today();
 renderAll();
+
+/* Entrée initiale — dashboard + FAB */
+gsap.matchMedia().add('(prefers-reduced-motion: no-preference)',()=>{
+  const dash=document.getElementById('page-dash');
+  gsap.from(dash.children,{y:18,opacity:0,duration:.5,stagger:.09,ease:'power2.out',clearProps:'all'});
+  gsap.from('.fab',{scale:0,opacity:0,duration:.6,ease:'back.out(1.7)',delay:.35});
+  gsap.from('header.top',{y:-14,opacity:0,duration:.4,ease:'power2.out'});
+  gsap.from('nav.tabs',{y:-8,opacity:0,duration:.4,delay:.1,ease:'power2.out',clearProps:'all'});
+});
 </script>
 </body>
 </html>
