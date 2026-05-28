@@ -38,12 +38,12 @@ body{
   line-height:1.4;
   overflow-x:hidden;
 }
-body::before{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 800px 500px at 80% -10%, rgba(255,85,0,.05), transparent 60%),
-    radial-gradient(ellipse 600px 400px at -10% 80%, rgba(0,201,255,.03), transparent 55%);
+/* Shader WebGL background */
+#shaderBg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  opacity:.65;
 }
+#shaderBg canvas{display:block}
 
 /* ============ LAYOUT ============ */
 .app{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 18px 120px}
@@ -374,6 +374,7 @@ label{font-size:12.5px;font-weight:700;color:var(--txt-dim);text-transform:upper
 </style>
 </head>
 <body>
+<div id="shaderBg"></div>
 <div class="app">
 
   <header class="top">
@@ -1352,6 +1353,55 @@ gsap.matchMedia().add('(prefers-reduced-motion: no-preference)',()=>{
   gsap.from('header.top',{y:-14,opacity:0,duration:.4,ease:'power2.out'});
   gsap.from('nav.tabs',{y:-8,opacity:0,duration:.4,delay:.1,ease:'power2.out',clearProps:'all'});
 });
+</script>
+
+<!-- Animated mesh gradient background (paper-design/shaders — vanilla JS, zero deps) -->
+<script type="module">
+import { ShaderMount, meshGradientFragmentShader, getShaderColorFromString }
+  from 'https://cdn.jsdelivr.net/npm/@paper-design/shaders@0.0.76/dist/index.js';
+
+const bg = document.getElementById('shaderBg');
+if (!bg) return;
+
+// Palette calquée sur la config ShaderGradient de l'utilisateur
+// Orange feu (#ff5500) sur fond bleu-noir (#0e0e14)
+const colors = [
+  '#ff5500',   // orange feu — blob principal
+  '#0e0e14',   // fond dark
+  '#1a0700',   // noir chaud
+  '#ff2d00',   // rouge-orange
+  '#080812',   // fond froid
+];
+
+try {
+  new ShaderMount(
+    bg,
+    meshGradientFragmentShader,
+    {
+      u_colors: colors.map(c => getShaderColorFromString(c)),
+      u_colorsCount: colors.length,
+      u_distortion: 0.55,
+      u_swirl:      0.28,
+      u_grainMixer: 0,
+      u_grainOverlay: 0,
+      /* sizing — cover, centré, pas de rotation */
+      u_fit:     2,     // cover
+      u_scale:   1.1,
+      u_rotation: 0,
+      u_offsetX:  0,
+      u_offsetY:  0,
+      u_originX:  0.5,
+      u_originY:  0.5,
+      u_worldWidth:  0,
+      u_worldHeight: 0,
+    },
+    undefined,  // webGlContextAttributes
+    0.05        // speed — très lent, comme uSpeed:0.1 dans ShaderGradient
+  );
+} catch (e) {
+  console.warn('[FORGE] Shader WebGL non supporté, fallback CSS', e);
+  document.body.style.background = 'radial-gradient(ellipse 800px 500px at 80% -10%, rgba(255,85,0,.07), transparent 60%)';
+}
 </script>
 </body>
 </html>
